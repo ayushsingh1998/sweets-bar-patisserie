@@ -1382,52 +1382,81 @@
   </div>
 
   <script>
-  // ── Product Modal ──────────────────────────────────────────────────────────
-  function roundPrice(p) { return Math.round(p / 50) * 50; }
-
-  // Multipliers relative to base (smallest) size
-  var SIZE_MULTIPLIERS = { 'Mini': 1, '500g': 1.6, '700g': 2.1, '1 kg': 2.6 };
-  // If base is 500g (no Mini):
-  var SIZE_MULTIPLIERS_FROM500 = { '500g': 1, '700g': 1.35, '1 kg': 1.8 };
-
-  var SIZE_LABELS = {
-    'Mini': 'Mini (approx. 250g)',
-    '500g': '500 grams',
-    '700g': '700 grams',
-    '1 kg': '1 Kilogram'
+  // ── Product Modal — Exact prices from menu ─────────────────────────────────
+  var PRODUCT_DB = {
+    // CHOCOLATE CAKES — 500g serves 4, 700g serves 8, 1kg serves 12
+    'Chocolate Cream Cake':            [{s:'500 grams',sv:4,p:595},{s:'700 grams',sv:8,p:849},{s:'1 Kilogram',sv:12,p:1190}],
+    'Pure Chocolate Cake':             [{s:'500 grams',sv:4,p:699},{s:'700 grams',sv:8,p:979},{s:'1 Kilogram',sv:12,p:1399}],
+    'Chocolate Coffee Cake':           [{s:'500 grams',sv:4,p:699},{s:'700 grams',sv:8,p:979},{s:'1 Kilogram',sv:12,p:1399}],
+    'Chocolate Orange Peel Cake':      [{s:'500 grams',sv:4,p:749},{s:'700 grams',sv:8,p:1059},{s:'1 Kilogram',sv:12,p:1499}],
+    'Chocolate Strawberry Cake':       [{s:'500 grams',sv:4,p:749},{s:'700 grams',sv:8,p:1059},{s:'1 Kilogram',sv:12,p:1499}],
+    'Chocolate Hazelnut Nutella Cake': [{s:'500 grams',sv:4,p:865},{s:'700 grams',sv:8,p:1169},{s:'1 Kilogram',sv:12,p:1729}],
+    'Belgian Chocolate Cake':          [{s:'500 grams',sv:4,p:865},{s:'700 grams',sv:8,p:1169},{s:'1 Kilogram',sv:12,p:1729}],
+    'Walnut Nutella Cake':             [{s:'500 grams',sv:4,p:865},{s:'700 grams',sv:8,p:1169},{s:'1 Kilogram',sv:12,p:1729}],
+    'Farrero Rocher Chocolate Cake':   [{s:'500 grams',sv:4,p:1159},{s:'700 grams',sv:8,p:1569},{s:'1 Kilogram',sv:12,p:2319}],
+    // SWEETS BAR SPECIAL (Mini·500g·1kg) — Mini serves 3, 500g serves 6, 1kg serves 12
+    'Black Forest Cake':               [{s:'Mini',sv:3,p:399},{s:'500 grams',sv:6,p:549},{s:'1 Kilogram',sv:12,p:999}],
+    'Butterscotch Caramel Cake':       [{s:'Mini',sv:3,p:399},{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1190}],
+    'Coffee Mocha Cake':               [{s:'Mini',sv:3,p:399},{s:'500 grams',sv:6,p:675},{s:'1 Kilogram',sv:12,p:1270}],
+    'Kesar Kaju Cake':                 [{s:'Mini',sv:3,p:549},{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1349}],
+    // SWEETS BAR SPECIAL (Mini·700g·1kg) — Mini serves 3, 700g serves 8, 1kg serves 12
+    'Crunchy Caramel Chocolate Cake':  [{s:'Mini',sv:3,p:549},{s:'700 grams',sv:8,p:949},{s:'1 Kilogram',sv:12,p:1349}],
+    'Red Velvet Oreo Cream Cheese Cake':[{s:'Mini',sv:3,p:549},{s:'700 grams',sv:8,p:979},{s:'1 Kilogram',sv:12,p:1390}],
+    'Caramel Hazelnut Coffee Cake':    [{s:'Mini',sv:3,p:549},{s:'700 grams',sv:8,p:999},{s:'1 Kilogram',sv:12,p:1499}],
+    'Oreo Cream Cheese Cake':          [{s:'Mini',sv:3,p:549},{s:'700 grams',sv:8,p:999},{s:'1 Kilogram',sv:12,p:1499}],
+    // CHEESE CAKES — 500g serves 6, 1kg serves 12
+    'Mango Cheesecake':                [{s:'500 grams',sv:6,p:1119},{s:'1 Kilogram',sv:12,p:2189}],
+    'Strawberry Cheesecake':           [{s:'500 grams',sv:6,p:1119},{s:'1 Kilogram',sv:12,p:2189}],
+    'Strawberry Raspberry Cheesecake': [{s:'500 grams',sv:6,p:1119},{s:'1 Kilogram',sv:12,p:2189}],
+    'Opium Cheesecake':                [{s:'500 grams',sv:6,p:1159},{s:'1 Kilogram',sv:12,p:2279}],
+    'Blueberry Cheesecake':            [{s:'500 grams',sv:6,p:1239},{s:'1 Kilogram',sv:12,p:2389}],
+    'Triple Chocolate Cheesecake':     [{s:'500 grams',sv:6,p:1269},{s:'1 Kilogram',sv:12,p:2469}],
+    'Lotus Biscoff Cheesecake':        [{s:'500 grams',sv:6,p:1289},{s:'1 Kilogram',sv:12,p:2459}],
+    // WHITE CHOCOLATE CAKES — 500g serves 6, 1kg serves 12
+    'White Chocolate Lychee Cake':           [{s:'500 grams',sv:6,p:599},{s:'1 Kilogram',sv:12,p:1120}],
+    'White Choc Irish Cream Cake':           [{s:'500 grams',sv:6,p:599},{s:'1 Kilogram',sv:12,p:1190}],
+    'White Choc Strawberry Cream Cake':      [{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1229}],
+    'White Chocolate Cranberry Cake':        [{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1299}],
+    'White Choc Strawberry Blueberry Cream': [{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1349}],
+    'White Choc Blueberry Cream Cake':       [{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1349}],
+    'White Choc Hazelnut Nutella Cream':     [{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1349}],
+    'White Choc Raffaello Irish Cream':      [{s:'500 grams',sv:6,p:799},{s:'1 Kilogram',sv:12,p:1499}],
+    // FRUIT CAKES — Mini serves 3, 500g serves 6, 1kg serves 12
+    'Vanilla Cake':                    [{s:'Mini',sv:3,p:400},{s:'500 grams',sv:6,p:549},{s:'1 Kilogram',sv:12,p:999}],
+    'Soothing Pineapple Cake':         [{s:'Mini',sv:3,p:400},{s:'500 grams',sv:6,p:549},{s:'1 Kilogram',sv:12,p:999}],
+    'Kinu Cheese Cream Cake':          [{s:'Mini',sv:3,p:450},{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1190}],
+    'Mango King Cake':                 [{s:'Mini',sv:3,p:499},{s:'500 grams',sv:6,p:599},{s:'1 Kilogram',sv:12,p:1190}],
+    'Mango King Almond Nut Cake':      [{s:'Mini',sv:3,p:559},{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1290}],
+    'Fresh Mango Cake':                [{s:'Mini',sv:3,p:559},{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1399}],
+    'Blueberry Cream Cheese Cake':     [{s:'Mini',sv:3,p:559},{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1190}],
+    'Strawberry Cream Cake':           [{s:'Mini',sv:3,p:499},{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1190}],
+    'Strawberry Cream Cheese Cake':    [{s:'Mini',sv:3,p:549},{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1290}],
+    // DRY CAKES — 500g serves 6, 1kg serves 12
+    'Pineapple Dry Fruit Cake':        [{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1249}],
+    'Chocolate Dry Fruit Cake':        [{s:'500 grams',sv:6,p:649},{s:'1 Kilogram',sv:12,p:1249}],
+    'Jaggery Dry Fruit Cake':          [{s:'500 grams',sv:6,p:799},{s:'1 Kilogram',sv:12,p:1399}],
+    'Coffee Mocha':                    [{s:'500 grams',sv:6,p:699},{s:'1 Kilogram',sv:12,p:1349}]
   };
 
   document.querySelectorAll('.menu-panel .group').forEach(function(card) {
     card.style.cursor = 'pointer';
     card.addEventListener('click', function(e) {
-      if (e.target.closest('a')) return; // don't intercept order button clicks
+      if (e.target.closest('a')) return;
       var img = card.querySelector('img');
       var name = card.querySelector('h3') ? card.querySelector('h3').innerText.trim() : '';
-      var sizesEl = card.querySelector('p');
-      var priceEl = card.querySelector('[style*="color:#C4956A"]');
-      var badgeEl = card.querySelector('.absolute span, span.absolute, [style*="#D4AF6E"]');
+      var tiers = PRODUCT_DB[name];
 
-      var sizesText = sizesEl ? sizesEl.innerText.replace(/\s*\|\s*/g, ' · ').trim() : '';
-      var priceText = priceEl ? priceEl.innerText.replace(/[^0-9]/g, '') : '0';
-      var basePrice = parseInt(priceText, 10) || 0;
+      if (!tiers) return; // no data, do nothing
 
-      var sizes = sizesText.split('·').map(function(s){ return s.trim(); }).filter(Boolean);
-      var hasMini = sizes[0] === 'Mini';
-      var multipliers = hasMini ? SIZE_MULTIPLIERS : SIZE_MULTIPLIERS_FROM500;
-
-      // Build price rows
       var pricesHtml = '';
-      sizes.forEach(function(size, i) {
-        var mult = multipliers[size] || 1;
-        var price = i === 0 ? basePrice : roundPrice(basePrice * mult);
+      tiers.forEach(function(t) {
         pricesHtml += '<div class="flex items-center justify-between px-4 py-3 rounded-2xl" style="background:#F5EFE6;">'
-          + '<div><p class="font-semibold text-sm" style="color:#1C1410;">' + (SIZE_LABELS[size] || size) + '</p>'
-          + '<p class="text-xs mt-0.5" style="color:#1C141060;">Serves ' + (size === 'Mini' ? '4–6' : size === '500g' ? '6–8' : size === '700g' ? '10–12' : '12–15') + ' people</p></div>'
-          + '<span class="font-black text-base" style="color:#C4956A;">&#8377;' + price + '</span>'
+          + '<div><p class="font-semibold text-sm" style="color:#1C1410;">' + t.s + '</p>'
+          + '<p class="text-xs mt-0.5" style="color:#1C141060;">Serves ' + t.sv + ' people</p></div>'
+          + '<span class="font-black text-base" style="color:#C4956A;">&#8377;' + t.p + '</span>'
           + '</div>';
       });
 
-      // Populate modal
       document.getElementById('modal-img').src = img ? img.src : '';
       document.getElementById('modal-img').alt = name;
       document.getElementById('modal-name').innerText = name;
