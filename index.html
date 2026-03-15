@@ -1346,5 +1346,115 @@
     <meta itemprop="priceRange" content="₹₹" />
   </div>
 
+
+  <!-- ===========================
+       PRODUCT DETAIL MODAL
+  ============================ -->
+  <div id="product-modal" class="fixed inset-0 z-[300] hidden" style="background:rgba(28,20,16,0.75);backdrop-filter:blur(6px);" onclick="closeProductModal(event)">
+    <div class="flex items-end md:items-center justify-center min-h-full">
+      <div id="modal-card" class="relative w-full md:max-w-md rounded-t-3xl md:rounded-3xl overflow-hidden" style="background:#FBF7F0;max-height:92vh;overflow-y:auto;">
+        <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(28,20,16,0.55);">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <div class="relative w-full" style="height:240px;">
+          <img id="modal-img" src="" alt="" class="w-full h-full object-cover" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(28,20,16,0.55) 0%,transparent 55%)"></div>
+          <span id="modal-badge" class="absolute top-4 left-4 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full" style="background:#D4AF6E;"></span>
+        </div>
+        <div class="p-5 pb-7">
+          <h3 id="modal-name" class="font-heading font-black text-2xl" style="color:#1C1410;"></h3>
+          <p id="modal-desc" class="text-sm mt-1 mb-5" style="color:#1C141099;"></p>
+          <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color:#C4956A;">Select Size &amp; Price</p>
+          <div id="modal-prices" class="grid grid-cols-1 gap-2 mb-6"></div>
+          <div class="flex gap-3">
+            <a href="tel:+919685553090" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-[40px] text-sm font-medium" style="border:1.5px solid #C4956A;color:#C4956A;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              Call to Order
+            </a>
+            <a href="https://wa.me/919685553090" target="_blank" rel="noopener" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-[40px] text-sm font-semibold text-white" style="background:#25D366;">
+              <svg class="w-4 h-4" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              WhatsApp Order
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ── Product Modal ──────────────────────────────────────────────────────────
+  function roundPrice(p) { return Math.round(p / 50) * 50; }
+
+  // Multipliers relative to base (smallest) size
+  var SIZE_MULTIPLIERS = { 'Mini': 1, '500g': 1.6, '700g': 2.1, '1 kg': 2.6 };
+  // If base is 500g (no Mini):
+  var SIZE_MULTIPLIERS_FROM500 = { '500g': 1, '700g': 1.35, '1 kg': 1.8 };
+
+  var SIZE_LABELS = {
+    'Mini': 'Mini (approx. 250g)',
+    '500g': '500 grams',
+    '700g': '700 grams',
+    '1 kg': '1 Kilogram'
+  };
+
+  document.querySelectorAll('.menu-panel .group').forEach(function(card) {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) return; // don't intercept order button clicks
+      var img = card.querySelector('img');
+      var name = card.querySelector('h3') ? card.querySelector('h3').innerText.trim() : '';
+      var sizesEl = card.querySelector('p');
+      var priceEl = card.querySelector('[style*="color:#C4956A"]');
+      var badgeEl = card.querySelector('.absolute span, span.absolute, [style*="#D4AF6E"]');
+
+      var sizesText = sizesEl ? sizesEl.innerText.replace(/\s*\|\s*/g, ' · ').trim() : '';
+      var priceText = priceEl ? priceEl.innerText.replace(/[^0-9]/g, '') : '0';
+      var basePrice = parseInt(priceText, 10) || 0;
+
+      var sizes = sizesText.split('·').map(function(s){ return s.trim(); }).filter(Boolean);
+      var hasMini = sizes[0] === 'Mini';
+      var multipliers = hasMini ? SIZE_MULTIPLIERS : SIZE_MULTIPLIERS_FROM500;
+
+      // Build price rows
+      var pricesHtml = '';
+      sizes.forEach(function(size, i) {
+        var mult = multipliers[size] || 1;
+        var price = i === 0 ? basePrice : roundPrice(basePrice * mult);
+        pricesHtml += '<div class="flex items-center justify-between px-4 py-3 rounded-2xl" style="background:#F5EFE6;">'
+          + '<div><p class="font-semibold text-sm" style="color:#1C1410;">' + (SIZE_LABELS[size] || size) + '</p>'
+          + '<p class="text-xs mt-0.5" style="color:#1C141060;">Serves ' + (size === 'Mini' ? '4–6' : size === '500g' ? '6–8' : size === '700g' ? '10–12' : '12–15') + ' people</p></div>'
+          + '<span class="font-black text-base" style="color:#C4956A;">&#8377;' + price + '</span>'
+          + '</div>';
+      });
+
+      // Populate modal
+      document.getElementById('modal-img').src = img ? img.src : '';
+      document.getElementById('modal-img').alt = name;
+      document.getElementById('modal-name').innerText = name;
+      document.getElementById('modal-desc').innerText = '100% eggless · Made fresh daily · Custom sizes available on request';
+      document.getElementById('modal-prices').innerHTML = pricesHtml;
+
+      var badge = card.querySelector('.rounded-full');
+      var badgeText = badge ? badge.innerText.trim() : '';
+      var modalBadge = document.getElementById('modal-badge');
+      if (badgeText) { modalBadge.innerText = badgeText; modalBadge.style.display = 'inline-block'; }
+      else { modalBadge.style.display = 'none'; }
+
+      document.getElementById('product-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeProductModal(e) {
+    if (e && e.target !== document.getElementById('product-modal')) return;
+    document.getElementById('product-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { document.getElementById('product-modal').classList.add('hidden'); document.body.style.overflow = ''; }
+  });
+  </script>
+
 </body>
 </html>
