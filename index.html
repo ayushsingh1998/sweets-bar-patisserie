@@ -211,7 +211,7 @@
 
         <!-- Logo -->
         <a href="#" class="flex items-center gap-3 flex-shrink-0">
-          <img src="./images/logo.jpg" alt="Sweets Bar Patisserie by Monil" class="h-[52px] w-[52px] rounded-full object-cover" style="border:2px solid rgba(212,175,110,0.4);" />
+          <img src="./images/logo.jpg" alt="Sweets Bar Patisserie by Monil" class="h-[52px] w-[52px] rounded-full object-cover" style="border:2px solid rgba(212,175,110,0.4);cursor:pointer;" onclick="event.preventDefault();openLogoLightbox();" />
           <div class="flex flex-col leading-none">
             <span class="font-heading font-black text-cognac text-xl tracking-tight">Sweets Bar</span>
             <span class="font-heading text-white/60 text-[10px] tracking-[0.15em] uppercase mt-0.5">Patisserie by Monil</span>
@@ -1482,6 +1482,37 @@
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') { document.getElementById('product-modal').classList.add('hidden'); document.body.style.overflow = ''; }
+  });
+  </script>
+
+
+  <!-- Logo Lightbox -->
+  <div id="logo-lightbox" class="fixed inset-0 z-[400] hidden flex items-center justify-center" style="background:rgba(28,20,16,0.88);backdrop-filter:blur(8px);" onclick="closeLogo(event)">
+    <div class="relative flex flex-col items-center gap-5 px-6">
+      <button onclick="document.getElementById('logo-lightbox').classList.add('hidden');document.body.style.overflow='';" class="absolute -top-10 right-0 w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,0.15);">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <img src="./images/logo.jpg" alt="Sweets Bar Patisserie by Monil" class="rounded-full object-cover shadow-2xl" style="width:260px;height:260px;border:3px solid rgba(212,175,110,0.6);" />
+      <div class="text-center">
+        <p class="font-heading font-black text-2xl" style="color:#C4956A;">Sweets Bar</p>
+        <p class="font-heading text-white/60 text-xs tracking-[0.2em] uppercase mt-1">Patisserie by Monil</p>
+        <p class="text-white/40 text-xs mt-3">Malviya Nagar, Bhopal · +91 96855 53090</p>
+      </div>
+    </div>
+  </div>
+  <script>
+  function openLogoLightbox() {
+    document.getElementById('logo-lightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLogo(e) {
+    if (e.target === document.getElementById('logo-lightbox')) {
+      document.getElementById('logo-lightbox').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { document.getElementById('logo-lightbox').classList.add('hidden'); document.body.style.overflow = ''; }
   });
   </script>
 
